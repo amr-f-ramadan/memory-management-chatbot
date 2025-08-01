@@ -1,0 +1,36 @@
+{
+    "name": "Memory Management Chatbot Dev Container",
+    "build": {
+        "dockerfile": "../Dockerfile.dev",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-vscode.cpptools-extension-pack",
+                "formulahendry.code-runner",
+                "jeff-hykin.better-cpp-syntax"
+            ],
+            "settings": {
+                "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+                "C_Cpp.default.intelliSenseMode": "gcc-x64",
+                "C_Cpp.default.cppStandard": "c++17",
+                "cmake.buildDirectory": "/workspace/build",
+                "cmake.generator": "Unix Makefiles"
+            }
+        }
+    },
+    "forwardPorts": [],
+    "mounts": [
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
+    ],
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "containerEnv": {
+        "HOST_DISPLAY": "${localEnv:DISPLAY}"
+    },
+    "postCreateCommand": "/workspace/.devcontainer/setup-display.sh",
+    "remoteUser": "developer",
+    "workspaceFolder": "/workspace"
+}
