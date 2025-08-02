@@ -2,7 +2,7 @@
 
 ✅ **Completed C++ Nanodegree Project** - Third Course: Memory Management
 
-**This Project was first submitted on September 21, 2021. Later on, it went through some enhancments that are listed below.**
+**This Project was first submitted on September 21, 2021. Later on, it went through some enhancements that are listed below.**
 
 This is my completed implementation of the Memory Management project from the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). This project demonstrates mastery of modern C++ memory management concepts including smart pointers, move semantics, and the Rule of Five.
 
