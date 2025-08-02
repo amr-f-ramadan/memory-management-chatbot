@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Optional: Add this to Dockerfile.dev to pre-install X11 packages
+# This reduces setup time but increases image size
+
+# Install X11 dependencies in the Docker image
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb \
+    x11-utils \
+    x11-xserver-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Note: Add this to Dockerfile.dev after the main package installation
+# if you want to pre-install X11 packages and avoid setup delays

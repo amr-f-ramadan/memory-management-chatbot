@@ -81,3 +81,4 @@ Thumbs.db
 
 # Docker
 .dockerignore
+.display_config

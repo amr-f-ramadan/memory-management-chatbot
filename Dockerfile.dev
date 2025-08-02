@@ -26,6 +26,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     sudo \
+    xvfb \
+    x11-utils \
+    x11-xserver-utils \
+    x11-apps \
     && rm -rf /var/lib/apt/lists/*
 
 # Create development user

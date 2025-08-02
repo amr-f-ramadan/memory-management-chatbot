@@ -88,17 +88,39 @@ test_display_connection() {
 install_dependencies() {
     local env_type="$1"
     
+    # Check if required packages are already installed
+    if command -v xvfb >/dev/null 2>&1 && command -v xset >/dev/null 2>&1; then
+        log_info "X11 dependencies already installed, skipping installation"
+        return 0
+    fi
+    
     log_info "Installing X11 dependencies..."
     
     case "$env_type" in
         "docker"|"linux")
             if command -v apt-get >/dev/null 2>&1; then
-                sudo apt-get update -qq
-                sudo apt-get install -y x11-utils x11-xserver-utils xvfb
+                # Update package list only if it's older than 24 hours
+                if [ ! -f "/var/lib/apt/lists/lock" ] || [ "$(find /var/lib/apt/lists -mtime -1 -name '*Packages*' | wc -l)" -eq 0 ]; then
+                    log_info "Updating package lists..."
+                    sudo apt-get update -qq
+                fi
+                
+                log_info "Installing packages (this may take a few minutes)..."
+                # Use timeout to prevent hanging and install minimal packages
+                timeout 300 sudo apt-get install -y --no-install-recommends x11-utils x11-xserver-utils xvfb || {
+                    log_error "Package installation timed out or failed"
+                    return 1
+                }
             elif command -v yum >/dev/null 2>&1; then
-                sudo yum install -y xorg-x11-utils xorg-x11-server-Xvfb
+                timeout 300 sudo yum install -y xorg-x11-utils xorg-x11-server-Xvfb || {
+                    log_error "Package installation timed out or failed"
+                    return 1
+                }
             elif command -v pacman >/dev/null 2>&1; then
-                sudo pacman -S --noconfirm xorg-utils xorg-server-xvfb
+                timeout 300 sudo pacman -S --noconfirm xorg-utils xorg-server-xvfb || {
+                    log_error "Package installation timed out or failed"  
+                    return 1
+                }
             fi
             ;;
         "macos")
@@ -187,34 +209,45 @@ generate_display_candidates() {
 start_virtual_display() {
     log_info "Starting virtual display with Xvfb..."
     
-    # Install Xvfb if not available
+    # Check if Xvfb is available
     if ! command -v Xvfb >/dev/null 2>&1; then
-        log_info "Installing Xvfb..."
-        sudo apt-get update -qq
-        sudo apt-get install -y xvfb x11-utils x11-xserver-utils
+        log_error "Xvfb not found. Please ensure X11 dependencies are installed."
+        return 1
     fi
     
     # Find available display number
     local display_num=99
     while [ -f "/tmp/.X${display_num}-lock" ] || [ -S "/tmp/.X11-unix/X${display_num}" ]; do
         display_num=$((display_num + 1))
+        # Prevent infinite loop
+        if [ $display_num -gt 110 ]; then
+            log_error "No available display numbers found"
+            return 1
+        fi
     done
     
     log_info "Attempting to start Xvfb on display :$display_num"
     
-    # Start Xvfb with simpler options first
-    Xvfb ":$display_num" -screen 0 1024x768x24 -ac >/dev/null 2>&1 &
+    # Start Xvfb with timeout protection
+    timeout 30 Xvfb ":$display_num" -screen 0 1024x768x24 -ac >/dev/null 2>&1 &
     local xvfb_pid=$!
     
-    # Wait for startup
-    sleep 3
+    # Wait for startup with timeout
+    local count=0
+    while [ $count -lt 10 ]; do
+        if kill -0 "$xvfb_pid" 2>/dev/null; then
+            break
+        fi
+        sleep 1
+        count=$((count + 1))
+    done
     
     # Verify it started
     if kill -0 "$xvfb_pid" 2>/dev/null; then
         export DISPLAY=":$display_num"
         
-        # Test the display
-        if command -v xset >/dev/null 2>&1 && timeout 3 xset q >/dev/null 2>&1; then
+        # Test the display with timeout
+        if command -v xset >/dev/null 2>&1 && timeout 5 xset q >/dev/null 2>&1; then
             # Save configuration
             cat > "$CONFIG_FILE" << EOF
 export DISPLAY=:$display_num
