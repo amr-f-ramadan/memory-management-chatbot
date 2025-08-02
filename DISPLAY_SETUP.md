@@ -11,14 +11,19 @@ The system automatically:
 4. **Saves configuration** for future use
 5. **Runs your GUI applications** seamlessly
 
+**✅ DevContainer Integration**: The display is automatically configured when the devcontainer starts via `postCreateCommand`.
+
 ## Files
 
 - **`.devcontainer/smart-display.sh`** - Main intelligent display manager
-- **`.devcontainer/setup-display.sh`** - DevContainer setup wrapper
+- **`.devcontainer/setup-display.sh`** - DevContainer setup wrapper (automatically run)
 - **`test-gui.sh`** - Test script that builds and runs the chatbot
 - **`.display_config`** - Saved display configuration (auto-generated)
 
 ## Usage
+
+### DevContainer (Automatic)
+When you open this workspace in a devcontainer, the display is automatically configured during container creation. No manual intervention required!
 
 ### Manual Display Setup
 ```bash
@@ -48,7 +53,7 @@ Use the predefined tasks:
 
 ## What Happens Automatically
 
-1. **On DevContainer Creation**: Display is automatically configured via `postCreateCommand`
+1. **On DevContainer Creation**: Display is automatically configured via `postCreateCommand` using the smart display system
 2. **Dynamic Host Detection**: Finds Docker host IP without hardcoding
 3. **Multiple Fallbacks**: Tests forwarded display → virtual display
 4. **Environment Adaptation**: Works differently on macOS vs Linux vs Docker

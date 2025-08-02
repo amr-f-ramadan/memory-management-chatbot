@@ -28,7 +28,7 @@
     ],
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "containerEnv": {
-        "HOST_DISPLAY": "${localEnv:DISPLAY}"
+        "LIBGL_ALWAYS_INDIRECT": "1"
     },
     "postCreateCommand": "/workspace/.devcontainer/setup-display.sh",
     "remoteUser": "developer",
