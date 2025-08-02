@@ -24,32 +24,6 @@
             "logging": {
                 "engineLogging": false
             }
-        },
-        {
-            "name": "Debug Membot (Docker)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "/workspace/build/membot",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "/workspace",
-            "environment": [
-                {
-                    "name": "DISPLAY",
-                    "value": ":0"
-                }
-            ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "docker-build",
-            "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
 }

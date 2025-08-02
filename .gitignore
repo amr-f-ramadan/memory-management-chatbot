@@ -79,6 +79,8 @@ Thumbs.db
 *.tar.gz
 *.zip
 
-# Docker
-.dockerignore
+# Temporary files
+*.tmp
+*.temp
+*~
 .display_config

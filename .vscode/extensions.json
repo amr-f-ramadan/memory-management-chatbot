@@ -6,7 +6,6 @@
         "ms-python.debugpy",
         "formulahendry.code-runner",
         "ms-vscode.hexeditor",
-        "jeff-hykin.better-cpp-syntax",
-        "ms-vscode-remote.remote-containers"
+        "jeff-hykin.better-cpp-syntax"
     ]
 }
